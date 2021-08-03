@@ -74,7 +74,7 @@ manPage(){
 	echo -e "${BOLD}EXAMPLES:${OFF}"
 	echo -e "\tsudo run-rita-run --all\n"
 	echo -e "${BOLD}AUTHOR:${OFF}"
-	echo -e "\t Written by Gabriel Simches\n"
+	echo -e "\tWritten by Gabriel Simches\n"
 	echo -e "${BOLD}COPYRIGHT${OFF}"
 	echo -e "\tThis is free software\n"
 	return $1
