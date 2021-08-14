@@ -10,8 +10,8 @@ Get started by following the installation steps below:
 ```
 git clone https://github.com/jeffvader84/run-rita-run/
 cd run-rita-run
-sudo chmod +x run-rita-run
-sudo cp run-rita-run /usr/local/bin/
+sudo chmod +x run-rita-run.sh
+sudo cp run-rita-run.sh /usr/local/bin/run-rita-run
 cd ..
 rm -rf run-rita-run/*
 rmdir run-rita-run
@@ -34,7 +34,7 @@ Using the tool is simple and easy!  Just run the command as root or sudo with th
 |  |\  \----.|  `--'  | |  |\   |        |  |\  \----.|  |     |  |     /  _____  \       |  |\  \----.|  `--'  | |  |\   |
 | _| `._____| \______/  |__| \__|        | _| `._____||__|     |__|    /__/     \__\      | _| `._____| \______/  |__| \__|
 
-v1.0
+v1.1.3
 
 
 
@@ -56,6 +56,7 @@ FLAGS:
 	--deleteall, -da           delete ALL RITA databases
 	--help, -h                 show help
 	--import, -i               run RITA against most recently completed Zeek log
+	--import-rolling, -ir      run RITA and generate a rolling db
 	--list, -l                 list all required variables and current DBs in RITA
 	--manual, -m               select a specific Zeek log to run
 	--print, -p                print rita data from provided db to screen in human readable format
@@ -67,7 +68,7 @@ EXAMPLES:
 	sudo run-rita-run --all
 
 AUTHOR:
-	 Written by Gabriel Simches
+	Written by Gabriel Simches
 
 COPYRIGHT
 	This is free software
