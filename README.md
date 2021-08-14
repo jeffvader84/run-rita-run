@@ -1,4 +1,4 @@
-# Run-RITA-Run | Version 1.0
+# Run-RITA-Run | Version 1.1.3
 > Open-source tool making RITA easier to use
 
 This tools is designed to work with the RITA (Real Intelligence Threat Analytics) tool avaiable at: https://github.com/activecm/rita
