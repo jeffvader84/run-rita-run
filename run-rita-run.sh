@@ -4,7 +4,7 @@
 
 # Variables - Start
 # Version
-RRRVERSION="v1.0"
+RRRVERSION="v1.1.3"
 
 # text color and formatting
 RED='\033[0;31m'
@@ -20,27 +20,22 @@ IAM=$(id -u)
 RITA='/usr/local/bin/rita'
 
 # REQUIRED VAR - Zeek Logs Location
-#ZPATH='/path/to/zeek/logs'
+ZPATH='/hunt-xs/zeek/logs'
 
 # Get Date -1 day
-DATE=`date | awk '{print $2}'`
-# Get Months
-MON31=(Jan Mar May Jul Aug Oct Dec)
-MON30=(Apr Jun Sep Nov)
-MON=`date | awk '{print $3}'`
-PDATE=`expr $DATE - 1`
-# Get Year
-YEAR=`date | awk '{print $6}'`
+TODAY=`date +%Y-%m-%d`
+YESTERDAY=`date --date=yesterday +%Y-%m-%d`
+PDATE=`date --date=yesterday +%Y-%m-%d`
 
 # REQUIRED VAR - RITA HTML Location
-#RHTML='/path/for/webservice'
+RHTML='/home/hunter'
 
 # Most recent Zeek log to ingest
-DBNAME=`ls $ZPATH | grep -E "^[0-9]" | tail -n 2 | head -n 1`
+DBNAME=`ls $ZPATH | grep $YESTERDAY`
 CZDIR=$ZPATH/$DBNAME
 
 # Init Array
-ALLZEEK=(`ls $ZPATH | grep -E "^[0-9]" | grep -v $DATE`)
+ALLZEEK=(`ls $ZPATH | grep -E "^[0-9]" | grep -v $TODAY`)
 ARLEN=${#ALLZEEK[@]}
 # RITA DBs if exist
 RDB=(`rita show-databases`)
@@ -65,6 +60,7 @@ manPage(){
 	echo -e "\t${BOLD}--deleteall, -da${OFF}           delete ALL RITA databases"
 	echo -e "\t${BOLD}--help, -h${OFF}                 show help"
 	echo -e "\t${BOLD}--import, -i${OFF}               run RITA against most recently completed Zeek log"
+	echo -e "\t${BOLD}--import-rolling, -ir${OFF}      run RITA and generate a rolling db"
 	echo -e "\t${BOLD}--list, -l${OFF}                 list all required variables and current DBs in RITA"
 	echo -e "\t${BOLD}--manual, -m${OFF}               select a specific Zeek log to run"
 	echo -e "\t${BOLD}--print, -p${OFF}                print rita data from provided db to screen in human readable format"
@@ -111,16 +107,16 @@ done
 
 # rita command
 ritaImport(){
-if [ `rita show-databases | grep $DBNAME` ]
+if [[ `rita show-databases | grep $DBNAME` ]]
 then
 	echo "RITA db exists for Zeek logs for $DBNAME"
-elif [ `ls $ZPATH | grep -E "^[0-9]" | tail -n 1 | cut -d "-" -f 3` = $DATE ]
+elif [[ `ls $ZPATH | grep $YESTERDAY` = $YESTERDAY ]]
 then
-	echo "ran RITA too soon"
-	echo -e "${YELLOW}run RITA only on Zeek logs from previously day to ensure data is complete and will not change${OFF}"
-else
 	echo "running RITA on Zeek logs for $DBNAME"
 	rita import $CZDIR $DBNAME
+else
+	echo "run-RITA-run ran into an unexpected issue... exiting now..."
+	exit 1
 fi
 }
 
@@ -194,6 +190,10 @@ dbDeleteAll(){
 		n | N | no | NO | No)
 			echo "Good thing I asked... Aborting operations..."
 		;;
+		*)
+			echo "Invalid Selection"
+			exit 1
+		;;
 	esac
 }
 
@@ -213,6 +213,14 @@ listAllRITA(){
 printBeacons(){
 	read -p "Enter DB name to print to screen: " SHOWME
 	rita show-beacons -H $SHOWME | less
+}
+
+importRolling(){
+	 rita import --rolling $ZPATH/* rollingDB
+}
+
+versionCheck(){
+	rita -v
 }
 
 welcomeArt(){
@@ -261,6 +269,9 @@ case $1 in
 	-i | --import)
 		ritaImport
 	;;
+	-ir | --import-rolling)
+		importRolling
+	;;
 	-r | --report)
 		ritaHTML
 	;;
@@ -277,7 +288,7 @@ case $1 in
 		manualSelect
 	;;
 	-h | --help)
-	  manPage 0
+	        manPage 0 # exit sucessfully
 	;;
 	-l | --list)
 		listAllRITA
@@ -285,8 +296,8 @@ case $1 in
 	-p | --print)
 		printBeacons
 	;;
-  -v | --version)
-		echo -e "\nYou are currently running : $RRRVERSION"
+        -v | --version)
+		versionCheck
 	;;
 	*)
 		echo -e "\nCommand flags are required for this script.  Review Man Page below:\n"
