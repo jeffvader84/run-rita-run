@@ -14,6 +14,7 @@ sudo chmod +x run-rita-run.sh
 sudo cp run-rita-run.sh /usr/local/bin/run-rita-run
 cd ..
 rm -rf run-rita-run/*
+rm -rf run-rita-run/.*
 rmdir run-rita-run
 ```
 
