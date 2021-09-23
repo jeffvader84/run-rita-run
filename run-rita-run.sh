@@ -4,7 +4,7 @@
 
 # Variables - Start
 # Version
-RRRVERSION="v1.1.3"
+RRRVERSION="v1.1.4"
 
 # text color and formatting
 RED='\033[0;31m'
