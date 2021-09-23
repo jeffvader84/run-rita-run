@@ -294,6 +294,7 @@ case $1 in
 		listAllRITA
 	;;
 	-p | --print)
+	        listAllRITA
 		printBeacons
 	;;
         -v | --version)
